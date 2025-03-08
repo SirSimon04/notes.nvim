@@ -9,8 +9,9 @@ local config = {
 function M.setup(opts)
 	opts = opts or {}
 	config = vim.tbl_deep_extend("force", config, opts)
-	-- config.books_dir = vim.fn.expand(config.books_dir)
-	-- config.dailies_dir = vim.fn.expand(config.dailies_dir)
+	config.books_dir = vim.fn.expand(config.books_dir)
+	config.dailies_dir = vim.fn.expand(config.dailies_dir)
+	config.meetings_dir = vim.fn.expand(config.meetings_dir)
 
 	require("notes.book_notes").setup(config)
 	require("notes.daily_notes").setup(config)
