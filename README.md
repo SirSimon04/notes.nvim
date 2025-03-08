@@ -30,12 +30,27 @@ use({
 
 ## Example Usage
 
-```json
-{
-  books_dir = "~/Documents/Notes/Books/",
-  dailies_dir = "~/Documents/Notes/DailyNotes/",
-  meetings_dir = "~/Documents/Notes/Meetings/"
-}
+```lua
+  {
+    'SirSimon04/notes.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    lazy = true,
+    keys = {
+      { '<leader>od', '<cmd>NotesOpenDailies<CR>', desc = 'Open Dailies' },
+      { '<leader>oy', '<cmd>NotesOpenYesterdayNote<CR>', desc = 'Open Yesterday Note' },
+      { '<leader>ot', '<cmd>NotesOpenTodayNote<CR>', desc = 'Open Today Note' },
+      { '<leader>oz', '<cmd>NotesOpenTomorrowNote<CR>', desc = 'Open Tomorrow Note' },
+      { '<leader>obo', '<cmd>NotesOpenBook<CR>', desc = 'Open Book' },
+      { '<leader>oba', '<cmd>NotesAddNoteToBook<CR>', desc = 'Add Note to Book' },
+      { '<leader>omo', '<cmd>NotesOpenMeetingNote<CR>', desc = 'Open Meeting Note' },
+      { '<leader>omc', '<cmd>NotesCreateMeetingNote<CR>', desc = 'Create Meeting Note' },
+    },
+    opts = {
+      books_dir = "~/Documents/Notes/Books/",
+      dailies_dir = "~/Documents/Notes/DailyNotes/",
+      meetings_dir = "~/Documents/Notes/Meetings/"
+    },
+  },
 ```
 
 * `books_dir`: The directory where your book notes are stored. Defaults to `~/notes/books`.
