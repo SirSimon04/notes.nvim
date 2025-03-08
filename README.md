@@ -1,6 +1,6 @@
 # notes.nvim
 
-`notes.nvim` is a Neovim plugin designed to enhance your note-taking workflow. It provides organized note management for books, daily notes, and general note-taking, enabling quick access and streamlined note creation.
+`notes.nvim` is a Neovim plugin designed to enhance your note-taking workflow. It provides organized note management for books, daily notes, and meeting notes, enabling quick access and streamlined note creation.
 
 ## Installation
 
