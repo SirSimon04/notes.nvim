@@ -11,8 +11,8 @@ local config = {}
 function M.setup(opts)
   config = opts
 
-  vim.api.nvim_create_user_command('OpenMeetingNote', M.open_meeting_note, {})
-  vim.api.nvim_create_user_command('CreateMeetingNote', M.create_meeting_note, {})
+  vim.api.nvim_create_user_command('NotesOpenMeetingNote', M.open_meeting_note, {})
+  vim.api.nvim_create_user_command('NotesCreateMeetingNote', M.create_meeting_note, {})
 end
 
 function M.open_meeting_note()

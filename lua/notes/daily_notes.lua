@@ -10,14 +10,14 @@ local config = {}
 function M.setup(opts)
   config = opts
 
-  vim.api.nvim_create_user_command('OpenDailies', M.open_dailies, {})
-  vim.api.nvim_create_user_command('OpenYesterdayNote', function()
+  vim.api.nvim_create_user_command('NotesOpenDailies', M.open_dailies, {})
+  vim.api.nvim_create_user_command('NotesOpenYesterdayNote', function()
     M.open_daily_note 'yesterday'
   end, {})
-  vim.api.nvim_create_user_command('OpenTodayNote', function()
+  vim.api.nvim_create_user_command('NotesOpenTodayNote', function()
     M.open_daily_note 'today'
   end, {})
-  vim.api.nvim_create_user_command('OpenTomorrowNote', function()
+  vim.api.nvim_create_user_command('NotesOpenTomorrowNote', function()
     M.open_daily_note 'tomorrow'
   end, {})
 end

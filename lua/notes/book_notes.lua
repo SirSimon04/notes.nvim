@@ -7,9 +7,9 @@ local config = {}
 
 function M.setup(opts)
   config = opts
-  vim.api.nvim_create_user_command('OpenBook', M.open_book, {})
-  vim.api.nvim_create_user_command('AddNoteToBook', M.add_note_to_book, {})
-  vim.api.nvim_create_user_command('CreateBook', M.create_book, {})
+  vim.api.nvim_create_user_command('NotesOpenBook', M.open_book, {})
+  vim.api.nvim_create_user_command('NotesAddNoteToBook', M.add_note_to_book, {})
+  vim.api.nvim_create_user_command('NotesCreateBook', M.create_book, {})
 
 end
 
