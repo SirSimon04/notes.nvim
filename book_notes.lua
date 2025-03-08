@@ -1,7 +1,6 @@
 -- ~/.config/nvim/lua/my_notes/book_notes.lua
 
 local M = {}
-local snacks = require 'snacks.picker'
 local vim_ui = vim.ui
 local io = io
 local path = require 'plenary.path'
@@ -35,7 +34,6 @@ function M.open_book()
     prompt = 'Select Book:',
   }, function(ok, choice)
     if ok and choice then
-      vim.notify('Opening book: ' .. display_names[choice])
       vim.cmd('edit ' .. path_map[display_names[choice]])
     end
   end)
@@ -93,33 +91,6 @@ function M.add_note_to_book()
       end)
     end
   end)
-end
-
-function dump(o)
-  if type(o) == 'table' then
-    local s = '{ '
-    for k, v in pairs(o) do
-      if type(k) ~= 'number' then
-        k = '"' .. k .. '"'
-      end
-      s = s .. '[' .. k .. '] = ' .. dump(v) .. ','
-    end
-    return s .. '} '
-  else
-    return tostring(o)
-  end
-end
-
--- Lua implementation of PHP scandir function
-function scandir(directory)
-  local i, t, popen = 0, {}, io.popen
-  local pfile = popen('ls -a "' .. directory .. '"')
-  for filename in pfile:lines() do
-    i = i + 1
-    t[i] = filename
-  end
-  pfile:close()
-  return t
 end
 
 function get_subdirectories(dir_path)
