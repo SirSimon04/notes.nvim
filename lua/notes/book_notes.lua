@@ -108,19 +108,36 @@ function M.create_book()
     local book_dir_path = path:new(config.books_dir .. book_name)
     local book_file_path = path:new(book_dir_path .. '/' .. book_name .. '.md')
 
+    vim.notify("Creating directory: " .. book_dir_path:absolute()) -- Debugging
+    vim.notify("Creating file: " .. book_file_path:absolute()) -- Debugging
+
+    -- Create the directory with explicit permissions
     local ok, err = vim.loop.fs_mkdir(book_dir_path:absolute(), 0777)
     if not ok then
       vim.notify('Failed to create directory: ' .. (err or 'unknown'), vim.log.levels.ERROR)
       return
     end
 
-    local file = io.open(book_file_path:absolute(), 'w')
+    -- Verify the directory was created
+    if not book_dir_path:exists() then
+      vim.notify('Directory creation failed: ' .. book_dir_path:absolute(), vim.log.levels.ERROR)
+      return
+    end
+
+    -- Check if the file already exists
+    if book_file_path:exists() then
+      vim.notify('File already exists: ' .. book_file_path:absolute(), vim.log.levels.ERROR)
+      return
+    end
+
+    -- Create the markdown file
+    local file, err = io.open(book_file_path:absolute(), 'w')
     if file then
       file:write('# ' .. book_name .. '\n') -- Write the H1
       file:close()
       vim.cmd('edit ' .. book_file_path:absolute())
     else
-      vim.notify('Failed to create file: ' .. book_file_path:absolute(), vim.log.levels.ERROR)
+      vim.notify('Failed to create file: ' .. book_file_path:absolute() .. ' - ' .. (err or 'unknown'), vim.log.levels.ERROR)
     end
   end)
 end
