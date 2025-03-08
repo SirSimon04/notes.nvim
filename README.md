@@ -1,0 +1,65 @@
+# notes.nvim
+
+`notes.nvim` is a Neovim plugin designed to enhance your note-taking workflow. It provides organized note management for books, daily notes, and general note-taking, enabling quick access and streamlined note creation.
+
+## Installation
+
+### Using lazy.nvim (Recommended)
+```lua
+{
+  "SirSimon04/notes.nvim",
+  lazy = true,
+  dependencies = { "nvim-lua/plenary.nvim" },
+  config = function()
+    require("notes").setup({})
+  end,
+}
+```
+
+### Using packer.nvim
+```lua
+use({
+  "SirSimon04/notes.nvim",
+  requires = { { "nvim-lua/plenary.nvim" } },
+  opt = true,
+  config = function()
+    require("notes").setup({})
+  end,
+})
+```
+
+## Example Usage
+
+```json
+{
+  books_dir = "~/Documents/Notes/Books/",
+  dailies_dir = "~/Documents/Notes/DailyNotes/",
+  meetings_dir = "~/Documents/Notes/Meetings/"
+}
+```
+
+* `books_dir`: The directory where your book notes are stored. Defaults to `~/notes/books`.
+* `dailies_dir`: The directory where your daily notes are stored. Defaults to `~/notes/dailies`.
+* `meetings_dir`: The directory where your meeting notes are stored. Defaults to `~/notes/dailies`.
+
+## Book Notes
+
+Book notes are organized into directories, with each directory representing a book. Inside each book directory, there is a main note file named after the directory and additional note files.
+
+* `:OpenBook`: Opens a picker to select and open a book's main note file.
+* `:AddNoteToBook`: Opens a picker to select a book, then prompts for a new note name. Creates a new note file and adds a wiki-style link to it in the main book file.
+
+## Daily Notes
+
+Daily notes are stored in files named in the format `YYYY-MM-DD.md`.
+
+* `:OpenDailies`: Opens a picker to browse daily notes.
+* `:OpenYesterdayNote`: Opens or creates yesterday's daily note.
+* `:OpenTodayNote`: Opens or creates today's daily note.
+* `:OpenTomorrowNote`: Opens or creates tomorrow's daily note.
+
+## Meeting Notes
+Meeting notes are stored in files named in the format `YYYY-MM-DD-MeetingName.md`.
+
+* `:OpenMeetingNote`: Opens a picker to browse meeting notes.
+* `:CreateMeetingNote`: Prompts for a meeting name and date (YYYY-MM-DD, integer for future days, or empty for today), then creates a meeting note file.
