@@ -1,5 +1,3 @@
--- ~/.config/nvim/lua/my_notes/meeting_notes.lua
-
 local M = {}
 local snacks = require 'snacks.picker'
 local vim_ui = vim.ui
@@ -8,12 +6,19 @@ local os_date = os.date
 local io = io
 local path = require 'plenary.path'
 
-local meeting_notes_dir = vim.fn.expand '~/Documents/Obsidian/test-vault-plugin/Meetingnotes/'
+local config = {}
+
+function M.setup(opts)
+  config = opts
+
+  vim.api.nvim_create_user_command('OpenMeetingNote', M.open_meeting_note, {})
+  vim.api.nvim_create_user_command('CreateMeetingNote', M.create_meeting_note, {})
+end
 
 function M.open_meeting_note()
   vim.notify 'Opening meeting notes'
   snacks.smart {
-    cwd = meeting_notes_dir,
+    cwd = config.meetings_dir,
     multi = { 'files' },
     title = 'Meeting notes',
     sort = function(a, b)
@@ -47,7 +52,7 @@ function M.create_meeting_note()
       end
 
       local file_name = date_str .. '-' .. meeting_name .. '.md'
-      local full_path = path:new(meeting_notes_dir .. file_name)
+      local full_path = path:new(config.meetings_dir .. file_name)
 
       -- Create the file
       local file = io.open(full_path:absolute(), 'w')

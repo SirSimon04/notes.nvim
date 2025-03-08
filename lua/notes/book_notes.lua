@@ -1,19 +1,23 @@
--- ~/.config/nvim/lua/my_notes/book_notes.lua
-
 local M = {}
 local vim_ui = vim.ui
 local io = io
 local path = require 'plenary.path'
 
-local books_dir = vim.fn.expand '~/Documents/Obsidian/test-vault-plugin/Books/' -- Adjust as needed
+local config = {}
+
+function M.setup(opts)
+  config = opts
+  vim.api.nvim_create_user_command('OpenBook', M.open_book, {})
+  vim.api.nvim_create_user_command('AddNoteToBook', M.add_note_to_book, {})
+end
 
 function M.open_book()
-  local book_dirs = get_subdirectories(books_dir)
+  local book_dirs = get_subdirectories(config.books_dir)
 
   local book_files = {}
   for _, book_dir in ipairs(book_dirs) do
     if book_dir then
-      local full_path = books_dir .. book_dir .. '/' .. book_dir .. '.md'
+      local full_path = config.books_dir .. book_dir .. '/' .. book_dir .. '.md'
 
       local book_file = path:new(full_path)
 
@@ -40,15 +44,15 @@ function M.open_book()
 end
 
 function M.add_note_to_book()
-  local book_dirs = get_subdirectories(books_dir)
+  local book_dirs = get_subdirectories(config.books_dir)
 
   local book_files = {}
   for _, book_dir in ipairs(book_dirs) do
     if book_dir then
-      local full_path = books_dir .. book_dir .. '/' .. book_dir .. '.md'
+      local full_path = config.books_dir .. book_dir .. '/' .. book_dir .. '.md'
       local book_file = path:new(full_path)
       if book_file and book_file:exists() then
-        table.insert(book_files, { path = books_dir .. book_dir, name = book_dir }) -- Store directory path
+        table.insert(book_files, { path = config.books_dir .. book_dir, name = book_dir }) -- Store directory path
       end
     end
   end

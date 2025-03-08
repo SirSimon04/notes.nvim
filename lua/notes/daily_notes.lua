@@ -1,5 +1,3 @@
--- ~/.config/nvim/lua/my_notes/daily_notes.lua
-
 local M = {}
 local snacks = require 'snacks.picker'
 local os_date = os.date
@@ -7,11 +5,26 @@ local os_time = os.time
 local io = io
 local path = require 'plenary.path'
 
-local daily_notes_dir = vim.fn.expand '~/Documents/Obsidian/test-vault-plugin/Dailynotes/'
+local config = {}
+
+function M.setup(opts)
+  config = opts
+
+  vim.api.nvim_create_user_command('OpenDailies', M.open_dailies, {})
+  vim.api.nvim_create_user_command('OpenYesterdayNote', function()
+    M.open_daily_note 'yesterday'
+  end, {})
+  vim.api.nvim_create_user_command('OpenTodayNote', function()
+    M.open_daily_note 'today'
+  end, {})
+  vim.api.nvim_create_user_command('OpenTomorrowNote', function()
+    M.open_daily_note 'tomorrow'
+  end, {})
+end
 
 function M.open_dailies()
   snacks.smart {
-    cwd = daily_notes_dir,
+    cwd = config.dailies_dir,
     multi = { 'files' },
     title = 'Daily notes',
     sort = function(a, b)
@@ -34,7 +47,7 @@ function M.open_daily_note(day)
   local target_time = os_time() + (date_offset * 86400)
   local date_str = os_date('%Y-%m-%d', target_time)
   local file_name = date_str .. '.md'
-  local full_path = path:new(daily_notes_dir .. file_name)
+  local full_path = path:new(config.dailies_dir .. file_name)
 
   if not full_path:exists() then
     local file = io.open(full_path:absolute(), 'w')
