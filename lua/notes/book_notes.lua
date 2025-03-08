@@ -9,6 +9,8 @@ function M.setup(opts)
   config = opts
   vim.api.nvim_create_user_command('OpenBook', M.open_book, {})
   vim.api.nvim_create_user_command('AddNoteToBook', M.add_note_to_book, {})
+  vim.api.nvim_create_user_command('CreateBook', M.create_book, {})
+
 end
 
 function M.open_book()
@@ -93,6 +95,32 @@ function M.add_note_to_book()
           end
         end
       end)
+    end
+  end)
+end
+
+function M.create_book()
+  vim_ui.input({ prompt = 'New Book Name: ' }, function(book_name)
+    if not book_name or book_name == '' then
+      return -- Cancelled
+    end
+
+    local book_dir_path = path:new(config.books_dir .. book_name)
+    local book_file_path = path:new(book_dir_path .. '/' .. book_name .. '.md')
+
+    local ok, err = vim.loop.fs_mkdir(book_dir_path:absolute(), 0755)
+    if not ok then
+      vim.notify('Failed to create directory: ' .. (err or 'unknown'), vim.log.levels.ERROR)
+      return
+    end
+
+    local file = io.open(book_file_path:absolute(), 'w')
+    if file then
+      file:write('# ' .. book_name .. '\n') -- Write the H1
+      file:close()
+      vim.cmd('edit ' .. book_file_path:absolute())
+    else
+      vim.notify('Failed to create file: ' .. book_file_path:absolute(), vim.log.levels.ERROR)
     end
   end)
 end
