@@ -46,20 +46,20 @@ use({
 
 Book notes are organized into directories, with each directory representing a book. Inside each book directory, there is a main note file named after the directory and additional note files.
 
-* `:OpenBook`: Opens a picker to select and open a book's main note file.
-* `:AddNoteToBook`: Opens a picker to select a book, then prompts for a new note name. Creates a new note file and adds a wiki-style link to it in the main book file.
+* `:NotesOpenBook`: Opens a picker to select and open a book's main note file.
+* `:NotesAddNoteToBook`: Opens a picker to select a book, then prompts for a new note name. Creates a new note file and adds a wiki-style link to it in the main book file.
 
 ## Daily Notes
 
 Daily notes are stored in files named in the format `YYYY-MM-DD.md`.
 
-* `:OpenDailies`: Opens a picker to browse daily notes.
-* `:OpenYesterdayNote`: Opens or creates yesterday's daily note.
-* `:OpenTodayNote`: Opens or creates today's daily note.
-* `:OpenTomorrowNote`: Opens or creates tomorrow's daily note.
+* `:NotesOpenDailies`: Opens a picker to browse daily notes.
+* `:NotesOpenYesterdayNote`: Opens or creates yesterday's daily note.
+* `:NotesOpenTodayNote`: Opens or creates today's daily note.
+* `:NotesOpenTomorrowNote`: Opens or creates tomorrow's daily note.
 
 ## Meeting Notes
 Meeting notes are stored in files named in the format `YYYY-MM-DD-MeetingName.md`.
 
-* `:OpenMeetingNote`: Opens a picker to browse meeting notes.
-* `:CreateMeetingNote`: Prompts for a meeting name and date (YYYY-MM-DD, integer for future days, or empty for today), then creates a meeting note file.
+* `:NotesOpenMeetingNote`: Opens a picker to browse meeting notes.
+* `:NotesCreateMeetingNote`: Prompts for a meeting name and date (YYYY-MM-DD, integer for future days, or empty for today), then creates a meeting note file.
