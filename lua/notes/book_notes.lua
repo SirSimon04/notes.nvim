@@ -108,7 +108,7 @@ function M.create_book()
     local book_dir_path = path:new(config.books_dir .. book_name)
     local book_file_path = path:new(book_dir_path .. '/' .. book_name .. '.md')
 
-    local ok, err = vim.loop.fs_mkdir(book_dir_path:absolute(), 0755)
+    local ok, err = vim.loop.fs_mkdir(book_dir_path:absolute(), 0777)
     if not ok then
       vim.notify('Failed to create directory: ' .. (err or 'unknown'), vim.log.levels.ERROR)
       return
