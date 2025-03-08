@@ -138,7 +138,6 @@ end
 
 function get_subdirectories(dir_path)
   local cmd = 'find ' .. dir_path .. ' -mindepth 1 -maxdepth 1 -type d -exec basename {} \\;'
-  vim.notify(cmd)
   local file, err = io.popen(cmd)
   if not file then
     vim.notify('Error executing find: ' .. (err or 'unknown'), vim.log.levels.ERROR)

@@ -16,7 +16,6 @@ function M.setup(opts)
 end
 
 function M.open_meeting_note()
-  vim.notify 'Opening meeting notes'
   snacks.smart {
     cwd = config.meetings_dir,
     multi = { 'files' },
