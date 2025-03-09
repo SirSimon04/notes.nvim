@@ -64,8 +64,14 @@ function M.load_template(template_name, config)
   return content
 end
 
-function M.replace_template_variables(template_content, variables)
+function M.replace_template_variables(template_content, variables, filename)
   local replaced_content = template_content
+
+   if filename then
+    local filename_without_extension = filename:match("(.+)%.%w+$") or filename
+    replaced_content = replaced_content:gsub("{{filename}}", filename_without_extension)
+  end
+
   for variable, value in pairs(variables) do
     replaced_content = replaced_content:gsub("{{" .. variable .. "}}", value)
   end

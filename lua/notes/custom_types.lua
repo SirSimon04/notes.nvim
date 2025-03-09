@@ -79,7 +79,7 @@ function M.setup(config)
                 [custom_type.name:lower() .. "_title"] = variables.title,
                 date = variables.date,
               }
-              local note_content = utils.replace_template_variables(template_content, template_variables)
+              local note_content = utils.replace_template_variables(template_content, template_variables, filename)
 
               local file, err = io.open(full_path:absolute(), "w")
               if file then
@@ -104,7 +104,7 @@ function M.setup(config)
               [custom_type.name:lower() .. "_title"] = variables.title,
               date = os_date("%Y-%m-%d"),
             }
-            local note_content = utils.replace_template_variables(template_content, template_variables)
+            local note_content = utils.replace_template_variables(template_content, template_variables, filename)
 
             local file, err = io.open(full_path:absolute(), "w")
             if file then
