@@ -55,7 +55,7 @@ function M.create_meeting_note()
       local file_name = date_str .. '-' .. meeting_name .. '.md'
       local full_path = path:new(config.meetings_dir .. file_name)
 
-      local template_content = utils.load_template('meeting.tpl') -- Load template
+      local template_content = utils.load_template('meeting', config) -- Load template
       if template_content then
         local variables = {
           meeting_name = meeting_name,

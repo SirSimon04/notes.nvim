@@ -52,7 +52,7 @@ function M.open_daily_note(day)
   local full_path = path:new(config.dailies_dir .. file_name)
 
   if not full_path:exists() then
-    local template_content = utils.load_template('daily.tpl') -- Load template
+    local template_content = utils.load_template('daily', config) -- Load template
     if template_content then
       local variables = {
         date = date_str,

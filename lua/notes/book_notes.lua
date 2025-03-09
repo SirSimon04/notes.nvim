@@ -125,11 +125,10 @@ function M.create_book()
       return
     end
 
-    local template_content = utils.load_template('book.tpl') -- Load template
+    local template_content = utils.load_template('book', config) -- Load template
     if template_content then
       local variables = {
         book_title = book_name,
-        author = "Author Name",
         start_date = vim.fn.strftime('%Y-%m-%d'),
         finish_date = "YYYY-MM-DD",
       }
