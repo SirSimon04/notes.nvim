@@ -4,6 +4,8 @@ local os_date = os.date
 local os_time = os.time
 local io = io
 local path = require 'plenary.path'
+local utils = require 'notes.utils' -- Import utils module
+local vim = vim
 
 local config = {}
 
@@ -50,11 +52,24 @@ function M.open_daily_note(day)
   local full_path = path:new(config.dailies_dir .. file_name)
 
   if not full_path:exists() then
-    local file = io.open(full_path:absolute(), 'w')
-    if file then
-      file:close()
+    local template_content = utils.load_template('daily.tpl') -- Load template
+    if template_content then
+      local variables = {
+        date = date_str,
+        current_time = vim.fn.strftime('%H:%M'),
+      }
+      local note_content = utils.replace_template_variables(template_content, variables) -- Replace variables
+
+      local file, err = io.open(full_path:absolute(), 'w')
+      if file then
+        file:write(note_content) -- Write template content
+        file:close()
+      else
+        vim.notify('Failed to create file: ' .. full_path:absolute() .. ' - ' .. (err or 'unknown'), vim.log.levels.ERROR)
+        return
+      end
     else
-      vim.notify('Failed to create file: ' .. full_path:absolute(), vim.log.levels.ERROR)
+      vim.notify('Failed to load daily template', vim.log.levels.ERROR)
       return
     end
   end

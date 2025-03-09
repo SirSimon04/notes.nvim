@@ -2,6 +2,8 @@ local M = {}
 local vim_ui = vim.ui
 local io = io
 local path = require 'plenary.path'
+local utils = require 'notes.utils' -- Import utils module
+local vim = vim
 
 local config = {}
 
@@ -10,7 +12,6 @@ function M.setup(opts)
   vim.api.nvim_create_user_command('NotesOpenBook', M.open_book, {})
   vim.api.nvim_create_user_command('NotesAddNoteToBook', M.add_note_to_book, {})
   vim.api.nvim_create_user_command('NotesCreateBook', M.create_book, {})
-
 end
 
 function M.open_book()
@@ -124,14 +125,27 @@ function M.create_book()
       return
     end
 
-    -- Write the H1 and open the file
-    local fileHandle, writeErr = io.open(book_file_path:absolute(), 'w')
-    if fileHandle then
-      fileHandle:write('# ' .. book_name .. '\n')
-      fileHandle:close()
-      vim.cmd('edit ' .. book_file_path:absolute())
+    local template_content = utils.load_template('book.tpl') -- Load template
+    if template_content then
+      local variables = {
+        book_title = book_name,
+        author = "Author Name",
+        start_date = vim.fn.strftime('%Y-%m-%d'),
+        finish_date = "YYYY-MM-DD",
+      }
+      local note_content = utils.replace_template_variables(template_content, variables) -- Replace variables
+
+      -- Write the H1 and open the file
+      local fileHandle, writeErr = io.open(book_file_path:absolute(), 'w')
+      if fileHandle then
+        fileHandle:write(note_content) -- Write template content
+        fileHandle:close()
+        vim.cmd('edit ' .. book_file_path:absolute())
+      else
+        vim.notify('Failed to write to file: ' .. (writeErr or 'unknown'), vim.log.levels.ERROR)
+      end
     else
-      vim.notify('Failed to write to file: ' .. (writeErr or 'unknown'), vim.log.levels.ERROR)
+      vim.notify('Failed to load book template', vim.log.levels.ERROR)
     end
   end)
 end

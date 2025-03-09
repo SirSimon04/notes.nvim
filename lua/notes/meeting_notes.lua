@@ -5,6 +5,8 @@ local os_time = os.time
 local os_date = os.date
 local io = io
 local path = require 'plenary.path'
+local utils = require 'notes.utils' -- Import utils module
+local vim = vim
 
 local config = {}
 
@@ -53,13 +55,24 @@ function M.create_meeting_note()
       local file_name = date_str .. '-' .. meeting_name .. '.md'
       local full_path = path:new(config.meetings_dir .. file_name)
 
-      -- Create the file
-      local file = io.open(full_path:absolute(), 'w')
-      if file then
-        file:close()
-        vim.cmd('edit ' .. full_path:absolute())
+      local template_content = utils.load_template('meeting.tpl') -- Load template
+      if template_content then
+        local variables = {
+          meeting_name = meeting_name,
+          date = date_str,
+        }
+        local note_content = utils.replace_template_variables(template_content, variables) -- Replace variables
+
+        local file, err = io.open(full_path:absolute(), 'w')
+        if file then
+          file:write(note_content) -- Write template content
+          file:close()
+          vim.cmd('edit ' .. full_path:absolute())
+        else
+          vim.notify('Failed to create file: ' .. full_path:absolute() .. ' - ' .. (err or 'unknown'), vim.log.levels.ERROR)
+        end
       else
-        vim.notify('Failed to create file: ' .. full_path:absolute(), vim.log.levels.ERROR)
+        vim.notify('Failed to load meeting template', vim.log.levels.ERROR)
       end
     end)
   end)
