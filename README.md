@@ -1,6 +1,5 @@
 # notes.nvim
 
-<!--toc:start-->
 - [Installation](#installation)
   * [Using lazy.nvim (Recommended)](#using-lazynvim-recommended)
   * [Using packer.nvim](#using-packernvim)
@@ -11,8 +10,8 @@
   * [Meeting Notes](#meeting-notes)
 - [Other features](#other-features)
   * [Templating](#templating)
+    * [Template Variables](#template-variables)
   * [Environment-Specific Configurations](#environment-specific-configurations)
-<!--toc:end-->
 
 `notes.nvim` is a Neovim plugin designed to enhance your note-taking workflow. It provides organized note management for books, daily notes, and meeting notes, enabling quick access and streamlined note creation.
 
@@ -104,6 +103,20 @@ Meeting notes are stored in files named in the format `YYYY-MM-DD-MeetingName.md
 ### Templating
 
 `notes.nvim` supports templating for note creation, allowing for consistent formatting. By default, the plugin provides internal templates. Users can customize these by specifying their own template file paths in the `opts.templates` configuration. If a user-defined template is not found, the plugin will gracefully fall back to the default internal template, notifying the user of the fallback. This ensures that note creation remains functional even if custom templates are missing.
+
+#### Template Variables
+
+The following template variables are available for use in your custom templates:
+
+* **Daily Notes:**
+    * `{{date}}`: The current date in YYYY-MM-DD format.
+    * `{{current_time}}`: The current time in HH:MM format.
+* **Book Notes:**
+    * `{{book_title}}`: The title of the book.
+    * `{{start_date}}`: The start date in YYYY-MM-DD format.
+* **Meeting Notes:**
+    * `{{meeting_name}}`: The name of the meeting.
+    * `{{date}}`: The date of the meeting in YYYY-MM-DD format.
 
 ### Environment-Specific Configurations
 

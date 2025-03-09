@@ -130,7 +130,6 @@ function M.create_book()
       local variables = {
         book_title = book_name,
         start_date = vim.fn.strftime('%Y-%m-%d'),
-        finish_date = "YYYY-MM-DD",
       }
       local note_content = utils.replace_template_variables(template_content, variables) -- Replace variables
 
