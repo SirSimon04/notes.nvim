@@ -18,6 +18,10 @@ function M.setup(config)
       vim.fn.mkdir(dir_path, "p")
     end
 
+    -- Update config.templates
+    local template_name = custom_type.template:match("([^/]+)%.md$")
+    config.templates[template_name] = vim.fn.expand(custom_type.template)
+
     -- Open command
     vim.api.nvim_create_user_command(open_command, function()
       local snacks = require("snacks.picker")
@@ -69,7 +73,7 @@ function M.setup(config)
             local filename = filename_pattern:gsub("${title}", variables.title):gsub("${date}", variables.date) .. ".md"
             local full_path = path:new(dir_path .. filename)
 
-            local template_content = utils.load_template(custom_type.template:match("([^/]+)%.md$"), config)
+            local template_content = utils.load_template(template_name, config) -- Use the updated config.templates
             if template_content then
               local template_variables = {
                 [custom_type.name:lower() .. "_title"] = variables.title,
@@ -94,7 +98,7 @@ function M.setup(config)
           local filename = filename_pattern:gsub("${title}", variables.title) .. ".md"
           local full_path = path:new(dir_path .. filename)
 
-          local template_content = utils.load_template(custom_type.template:match("([^/]+)%.md$"), config)
+          local template_content = utils.load_template(template_name, config) -- Use the updated config.templates
           if template_content then
             local template_variables = {
               [custom_type.name:lower() .. "_title"] = variables.title,

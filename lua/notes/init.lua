@@ -34,9 +34,7 @@ function M.setup(opts)
 
   config.dailies_dir = vim.fn.expand(config.dailies_dir)
   config.books_dir = vim.fn.expand(config.books_dir)
-  config.meetings_dir = vim.fn.expand(config.meetings_dir)
   config.templates.daily = vim.fn.expand(config.templates.daily)
-  config.templates.meeting = vim.fn.expand(config.templates.meeting)
   config.templates.book = vim.fn.expand(config.templates.book)
 
   dailies.setup(config)

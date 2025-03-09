@@ -12,7 +12,7 @@ end
 
 function M.load_template(template_name, config)
   local template_path = config.templates[template_name]
-  local user_template_used = false -- Track if user template was used
+  local user_template_used = false
 
   if template_path and template_path ~= "" then
     -- User-provided template
@@ -22,25 +22,40 @@ function M.load_template(template_name, config)
     -- Use plugin template
     local module_path = get_module_path()
     local module_dir = path:new(module_path):parent()
-    template_path = module_dir .. "/templates/" .. template_name .. ".tpl"
+    template_path = module_dir .. "/templates/" .. template_name .. ".md"
   end
 
   local file, err = io.open(template_path, "r")
   if not file then
     if user_template_used then
-      vim.notify("User template not found: " .. config.templates[template_name] .. ". Falling back to default template.", vim.log.levels.WARN)
+      vim.notify(
+        "User template not found: " .. config.templates[template_name] .. ". Falling back to default template.",
+        vim.log.levels.WARN
+      )
       -- Fallback to default plugin template
       local module_path = get_module_path()
       local module_dir = path:new(module_path):parent()
-      template_path = module_dir .. "/templates/" .. template_name .. ".tpl"
+      template_path = module_dir .. "/templates/" .. template_name .. ".md"
       file, err = io.open(template_path, "r") -- Try to load the default template
       if not file then
-        vim.notify("Failed to load default template: " .. template_name .. " - " .. (err or "unknown"), vim.log.levels.ERROR)
-        return nil
+        -- Fallback to error template
+        template_path = module_dir .. "/templates/error.md"
+        file, err = io.open(template_path, "r")
+        if not file then
+          vim.notify("Failed to load default template: " .. template_name .. " and error template - " .. (err or "unknown"), vim.log.levels.ERROR)
+          return nil
+        end
       end
     else
-      vim.notify("Failed to load default template: " .. template_name .. " - " .. (err or "unknown"), vim.log.levels.ERROR)
-      return nil
+      -- Fallback to error template.
+      local module_path = get_module_path()
+      local module_dir = path:new(module_path):parent()
+      template_path = module_dir .. "/templates/error.md"
+      file, err = io.open(template_path, "r")
+      if not file then
+        vim.notify("Failed to load default template: " .. template_name .. " and error template - " .. (err or "unknown"), vim.log.levels.ERROR)
+        return nil
+      end
     end
   end
 
