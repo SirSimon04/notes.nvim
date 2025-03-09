@@ -1,20 +1,19 @@
 local M = {}
 local dailies = require("notes.daily_notes")
-local meetings = require("notes.meeting_notes")
 local book_notes = require("notes.book_notes")
+local custom_types = require("notes.custom_types")
 local vim = vim
 local os = os
 
 local default_opts = {
   dailies_dir = "~/notes/daily/",
   books_dir = "~/notes/books/",
-  meetings_dir = "~/notes/meetings/",
   templates = {
     daily = "",
-    meeting = "",
     book = "",
   },
   environments = {}, -- Default empty environments
+  custom_types = {},
 }
 
 local config = {}
@@ -41,8 +40,9 @@ function M.setup(opts)
   config.templates.book = vim.fn.expand(config.templates.book)
 
   dailies.setup(config)
-  meetings.setup(config)
   book_notes.setup(config)
+
+  custom_types.setup(config) -- Add this line
 end
 
 return M
