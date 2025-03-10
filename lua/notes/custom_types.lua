@@ -108,7 +108,7 @@ function add_note_to_folder_based_note(custom_type, config)
       vim_ui.input({ prompt = "New Note Name: " }, function(new_note_name)
         if new_note_name and new_note_name ~= "" then
           local main_note_name = display_names[choice]
-          local new_note_path = path:new(note_dir_path .. "/" .. main_note_name .. "-" .. new_note_name .. ".md")
+          local new_note_path = path:new(note_dir_path, main_note_name .. "-" .. new_note_name .. ".md")
           local main_note_path = path:new(note_dir_path .. "/" .. main_note_name .. ".md")
 
           local new_note_file = io.open(new_note_path:absolute(), "w")
@@ -139,8 +139,8 @@ function create_folder_based_note(custom_type, config)
       return -- Cancelled
     end
 
-    local note_dir_path = path:new(vim.fn.expand(custom_type.dir) .. "/" .. note_name)
-    local note_file_path = path:new(note_dir_path .. "/" .. note_name .. ".md")
+    local note_dir_path = path:new(vim.fn.expand(custom_type.dir), note_name)
+    local note_file_path = path:new(note_dir_path, note_name .. ".md")
 
     -- Create the directory using os.execute
     local cmd = 'mkdir -p "' .. note_dir_path:absolute() .. '"'
