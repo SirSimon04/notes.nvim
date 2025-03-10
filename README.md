@@ -70,6 +70,7 @@ use({
             dir = "~/Documents/Projects/",
             template = "~/Documents/Notes/Templates/project.md",
             folder_based = true,
+            filename = "${title}",
         },
       },
       environments = {
