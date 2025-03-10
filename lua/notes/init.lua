@@ -1,6 +1,5 @@
 local M = {}
 local dailies = require("notes.daily_notes")
-local book_notes = require("notes.book_notes")
 local custom_types = require("notes.custom_types")
 local vim = vim
 local os = os
@@ -33,12 +32,9 @@ function M.setup(opts)
   end
 
   config.dailies_dir = vim.fn.expand(config.dailies_dir)
-  config.books_dir = vim.fn.expand(config.books_dir)
   config.templates.daily = vim.fn.expand(config.templates.daily)
-  config.templates.book = vim.fn.expand(config.templates.book)
 
   dailies.setup(config)
-  -- book_notes.setup(config)
 
   custom_types.setup(config) -- Add this line
 end
