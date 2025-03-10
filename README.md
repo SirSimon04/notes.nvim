@@ -108,6 +108,7 @@ Custom note types can be defined in the `custom_types` table in the configuratio
 
 * `:NotesOpen<TypeName>`: Opens a picker to browse notes of the specified type. Replace `<TypeName>` with the name of your custom type (e.g., `:NotesOpenMeeting`).
 * `:NotesCreate<TypeName>`: Prompts for a title and optional date, then creates a note of the specified type. Replace `<TypeName>` with the name of your custom type (e.g., `:NotesCreateMeeting`).
+* `:NotesAddNoteTo<TypeName>`: In case of `folder-based`: Opens a picker to select a note of the specified type, then prompts for a new note name. Creates a new note file and adds a wiki-style link to it in the selected note. Replace `<TypeName>` with the name of your custom type (e.g., `:NotesAddNoteToProject`).
 
 **Filename Variables:**
 
