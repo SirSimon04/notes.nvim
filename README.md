@@ -5,7 +5,6 @@
   * [Using packer.nvim](#using-packernvim)
 - [Example Usage](#example-usage)
 - [Type of notes](#type-of-notes)
-  * [Book Notes](#book-notes)
   * [Daily Notes](#daily-notes)
   * [Custom Types](#custom-types)
 - [Other features](#other-features)
@@ -13,7 +12,7 @@
     * [Template Variables](#template-variables)
   * [Environment-Specific Configurations](#environment-specific-configurations)
 
-`notes.nvim` is a Neovim plugin designed to enhance your note-taking workflow. It provides organized note management for books, daily notes, and custom note types, enabling quick access and streamlined note creation.
+`notes.nvim` is a Neovim plugin designed to enhance your note-taking workflow. It provides organized note management for daily notes, and custom note types, enabling quick access and streamlined note creation.
 
 ## Installation
 
@@ -53,15 +52,11 @@ use({
       { '<leader>oy', '<cmd>NotesOpenYesterdayNote<CR>', desc = 'Open Yesterday Note' },
       { '<leader>ot', '<cmd>NotesOpenTodayNote<CR>', desc = 'Open Today Note' },
       { '<leader>oz', '<cmd>NotesOpenTomorrowNote<CR>', desc = 'Open Tomorrow Note' },
-      { '<leader>obo', '<cmd>NotesOpenBook<CR>', desc = 'Open Book' },
-      { '<leader>oba', '<cmd>NotesAddNoteToBook<CR>', desc = 'Add Note to Book' },
     },
     opts = {
-      books_dir = "~/Documents/Notes/Books/",
       dailies_dir = "~/Documents/Notes/DailyNotes/",
       templates = {
         daily = "~/Documents/Notes/Templates/daily.md",
-        book = "~/Documents/Notes/Templates/book.md",
       },
       custom_types = {
         {
@@ -69,6 +64,12 @@ use({
           dir = "~/Documents/Notes/Meetings/",
           template = "~/Documents/Notes/Templates/meeting.md",
           filename = "${date}-Meeting-${title}",
+        },
+        {
+            name = "Project",
+            dir = "~/Documents/Projects/",
+            template = "~/Documents/Notes/Templates/project.md",
+            folder_based = true,
         },
       },
       environments = {
@@ -84,20 +85,12 @@ use({
   },
 ```
 
-* `books_dir`: The directory where your book notes are stored. Defaults to `~/notes/books`.
 * `dailies_dir`: The directory where your daily notes are stored. Defaults to `~/notes/dailies`.
 * `custom_types`: A table of custom note types.
 * `environments`: See [Environment-Specific Configurations](#environment-specific-configurations)
 
 
 ## Type of notes
-
-### Book Notes
-
-Book notes are organized into directories, with each directory representing a book. Inside each book directory, there is a main note file named after the directory and additional note files.
-
-* `:NotesOpenBook`: Opens a picker to select and open a book's main note file.
-* `:NotesAddNoteToBook`: Opens a picker to select a book, then prompts for a new note name. Creates a new note file and adds a wiki-style link to it in the main book file.
 
 ### Daily Notes
 
@@ -120,19 +113,38 @@ Custom note types can be defined in the `custom_types` table in the configuratio
 * `${title}`: The title of the note.
 * `${date}`: The date of the note (YYYY-MM-DD). If `${date}` is used in the `filename` pattern, the user will be prompted for a date.
 
+**Folder-Based Custom Types:**
+
+Custom types can be folder-based, meaning each note is a directory containing a main note file and potentially other related notes. To create a folder-based custom type, set `folder_based = true` in the custom type configuration.
+
+For example, to create a "Project" type:
+
+```lua
+custom_types = {
+    {
+        name = "Project",
+        dir = "~/Documents/Projects/",
+        template = "~/Documents/Notes/Templates/project.md",
+        folder_based = true,
+    },
+}
+```
+
+* `:NotesOpenProject`: Opens a picker to select and open a project's main note file.
+* `:NotesCreateProject`: Prompts for a project name and creates a new project directory with a main note file.
+* `:NotesAddNoteToProject`: Opens a picker to select a project, then prompts for a new note name. Creates a new note file and adds a wiki-style link to it in the main project file.
+
 **Template Variables:**
 
 The following template variables are available for use in your custom templates:
 
 * **Daily Notes:**
-    * `{{date}}`: The current date inтрибут-MM-DD format.
+    * `{{date}}`: The current date in YYYY-MM-DD format.
     * `{{current_time}}`: The current time in HH:MM format.
-* **Book Notes:**
-    * `{{book_title}}`: The title of the book.
-    * `{{start_date}}`: The start date inтрибут-MM-DD format.
 * **Custom Types:**
     * `{{<lowercase_type_name>_title}}`: The title of the note. Replace `<lowercase_type_name>` with the lowercase name of your custom type (e.g., `{{meeting_title}}`).
-    * `{{date}}`: The date of the note inтрибут-MM-DD format.
+    * `{{date}}`: The date of the note in YYYY-MM-DD format.
+    * `{{filename}}`: The filename of the note, including the .md extension.
 
 ## Other features
 
@@ -146,11 +158,9 @@ To facilitate note management across different environments (e.g., work and priv
 
 ```lua
 opts = {
-  books_dir = '~/work/Books/',
   dailies_dir = '~/work/Dailynotes/',
   templates = {
     daily = '~/work/templates/daily.md',
-    book = '~/work/templates/book.md',
   },
   environments = {
     {

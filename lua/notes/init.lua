@@ -38,7 +38,7 @@ function M.setup(opts)
   config.templates.book = vim.fn.expand(config.templates.book)
 
   dailies.setup(config)
-  book_notes.setup(config)
+  -- book_notes.setup(config)
 
   custom_types.setup(config) -- Add this line
 end

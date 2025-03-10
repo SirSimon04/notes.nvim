@@ -11,6 +11,10 @@ local function get_module_path()
 end
 
 function M.load_template(template_name, config)
+  if not template_name then
+    return nil
+  end
+
   local template_path = config.templates[template_name]
   local user_template_used = false
 
