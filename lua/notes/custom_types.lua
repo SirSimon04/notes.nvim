@@ -54,24 +54,24 @@ end
 -- Helper Functions for Folder-Based Notes
 
 function open_folder_based_notes(custom_type, config)
-  local book_dirs = get_subdirectories(vim.fn.expand(custom_type.dir))
+  local note_dirs = get_subdirectories(vim.fn.expand(custom_type.dir))
 
-  local book_files = {}
-  for _, book_dir in ipairs(book_dirs) do
-    if book_dir then
-      local full_path = vim.fn.expand(custom_type.dir) .. "/" .. book_dir .. "/" .. book_dir .. ".md"
-      local book_file = path:new(full_path)
-      if book_file and book_file:exists() then
-        table.insert(book_files, { path = full_path, name = book_dir })
+  local note_files = {}
+  for _, note_dir in ipairs(note_dirs) do
+    if note_dir then
+      local full_path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir .. "/" .. note_dir .. ".md"
+      local note_file = path:new(full_path)
+      if note_file and note_file:exists() then
+        table.insert(note_files, { path = full_path, name = note_dir })
       end
     end
   end
 
   local display_names = {}
   local path_map = {}
-  for _, book in ipairs(book_files) do
-    table.insert(display_names, book.name)
-    path_map[book.name] = book.path
+  for _, note in ipairs(note_files) do
+    table.insert(display_names, note.name)
+    path_map[note.name] = note.path
   end
 
   vim_ui.select(display_names, { prompt = "Select " .. custom_type.name .. ":" }, function(ok, choice)
@@ -82,34 +82,34 @@ function open_folder_based_notes(custom_type, config)
 end
 
 function add_note_to_folder_based_note(custom_type, config)
-  local book_dirs = get_subdirectories(vim.fn.expand(custom_type.dir))
+  local note_dirs = get_subdirectories(vim.fn.expand(custom_type.dir))
 
-  local book_files = {}
-  for _, book_dir in ipairs(book_dirs) do
-    if book_dir then
-      local full_path = vim.fn.expand(custom_type.dir) .. "/" .. book_dir .. "/" .. book_dir .. ".md"
-      local book_file = path:new(full_path)
-      if book_file and book_file:exists() then
-        table.insert(book_files, { path = vim.fn.expand(custom_type.dir) .. "/" .. book_dir, name = book_dir })
+  local note_files = {}
+  for _, note_dir in ipairs(note_dirs) do
+    if note_dir then
+      local full_path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir .. "/" .. note_dir .. ".md"
+      local note_file = path:new(full_path)
+      if note_file and note_file:exists() then
+        table.insert(note_files, { path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir, name = note_dir })
       end
     end
   end
 
   local display_names = {}
   local path_map = {}
-  for _, book in ipairs(book_files) do
-    table.insert(display_names, book.name)
-    path_map[book.name] = book.path
+  for _, note in ipairs(note_files) do
+    table.insert(display_names, note.name)
+    path_map[note.name] = note.path
   end
 
   vim_ui.select(display_names, { prompt = "Select " .. custom_type.name .. " to add note to:" }, function(ok, choice)
     if ok and choice then
-      local book_dir_path = path_map[display_names[choice]]
-      vim_ui.input({ prompt = "New Note Name: " }, function(note_name)
-        if note_name and note_name ~= "" then
-          local book_name = display_names[choice]
-          local new_note_path = path:new(book_dir_path .. "/" .. book_name .. "-" .. note_name .. ".md")
-          local main_book_path = path:new(book_dir_path .. "/" .. book_name .. ".md")
+      local note_dir_path = path_map[display_names[choice]]
+      vim_ui.input({ prompt = "New Note Name: " }, function(new_note_name)
+        if new_note_name and new_note_name ~= "" then
+          local main_note_name = display_names[choice]
+          local new_note_path = path:new(note_dir_path .. "/" .. main_note_name .. "-" .. new_note_name .. ".md")
+          local main_note_path = path:new(note_dir_path .. "/" .. main_note_name .. ".md")
 
           local new_note_file = io.open(new_note_path:absolute(), "w")
           if new_note_file then
@@ -119,13 +119,13 @@ function add_note_to_folder_based_note(custom_type, config)
             return
           end
 
-          local main_book_file = io.open(main_book_path:absolute(), "a")
-          if main_book_file then
-            main_book_file:write("\n[[" .. book_name .. "-" .. note_name .. "]]\n")
-            main_book_file:close()
+          local main_note_file = io.open(main_note_path:absolute(), "a")
+          if main_note_file then
+            main_note_file:write("\n[[" .. main_note_name .. "-" .. new_note_name .. "]]\n")
+            main_note_file:close()
             vim.cmd("edit " .. new_note_path:absolute())
           else
-            vim.notify("Failed to update main book file: " .. main_book_path:absolute(), vim.log.levels.ERROR)
+            vim.notify("Failed to update main note file: " .. main_note_path:absolute(), vim.log.levels.ERROR)
           end
         end
       end)
@@ -134,78 +134,78 @@ function add_note_to_folder_based_note(custom_type, config)
 end
 
 function create_folder_based_note(custom_type, config)
-    vim_ui.input({ prompt = "New " .. custom_type.name .. " Name: " }, function(book_name)
-        if not book_name or book_name == "" then
-            return -- Cancelled
-        end
+  vim_ui.input({ prompt = "New " .. custom_type.name .. " Name: " }, function(note_name)
+    if not note_name or note_name == "" then
+      return -- Cancelled
+    end
 
-        local book_dir_path = path:new(vim.fn.expand(custom_type.dir) .. "/" .. book_name)
-        local book_file_path = path:new(book_dir_path .. "/" .. book_name .. ".md")
+    local note_dir_path = path:new(vim.fn.expand(custom_type.dir) .. "/" .. note_name)
+    local note_file_path = path:new(note_dir_path .. "/" .. note_name .. ".md")
 
-        -- Create the directory using os.execute
-        local cmd = 'mkdir -p "' .. book_dir_path:absolute() .. '"'
-        local ok, err = os.execute(cmd)
-        if ok ~= 0 then
-            vim.notify("Failed to create directory: " .. (err or "unknown"), vim.log.levels.ERROR)
-            return
-        end
+    -- Create the directory using os.execute
+    local cmd = 'mkdir -p "' .. note_dir_path:absolute() .. '"'
+    local ok, err = os.execute(cmd)
+    if ok ~= 0 then
+      vim.notify("Failed to create directory: " .. (err or "unknown"), vim.log.levels.ERROR)
+      return
+    end
 
-        -- Create the file using os.execute
-        local fileCmd = 'touch "' .. book_file_path:absolute() .. '"'
-        local fileOk, fileErr = os.execute(fileCmd)
-        if fileOk ~= 0 then
-            vim.notify("Failed to create file: " .. (fileErr or "unknown"), vim.log.levels.ERROR)
-            return
-        end
+    -- Create the file using os.execute
+    local fileCmd = 'touch "' .. note_file_path:absolute() .. '"'
+    local fileOk, fileErr = os.execute(fileCmd)
+    if fileOk ~= 0 then
+      vim.notify("Failed to create file: " .. (fileErr or "unknown"), vim.log.levels.ERROR)
+      return
+    end
 
-        local template_content
-        if custom_type.template and custom_type.template ~= "" then
-            local template_name = custom_type.template:match("([^/]+)%.md$")
-            template_content = utils.load_template(template_name, config)
+    local template_content
+    if custom_type.template and custom_type.template ~= "" then
+      local template_name = custom_type.template:match("([^/]+)%.md$")
+      template_content = utils.load_template(template_name, config)
+    else
+      -- Find the directory where utils.lua is located using debug.getinfo
+      local info = debug.getinfo(utils.load_template, "S")
+      if info and info.source then
+        local utils_path = info.source:sub(2) -- Remove leading '@'
+        local module_dir = path:new(utils_path):parent():absolute() -- Go up two levels
+        local error_template_path = module_dir .. "/templates/error.md"
+
+        vim.notify("Module Dir: " .. module_dir, vim.log.levels.DEBUG)
+        vim.notify("Error Template Path: " .. error_template_path, vim.log.levels.DEBUG)
+
+        local error_file, error_err = io.open(error_template_path, "r")
+        if error_file then
+          template_content = error_file:read("*a")
+          error_file:close()
+          vim.notify("No template provided, using error template.", vim.log.levels.WARN)
         else
-            -- Find the directory where utils.lua is located using debug.getinfo
-            local info = debug.getinfo(utils.load_template, "S")
-            if info and info.source then
-                local utils_path = info.source:sub(2) -- Remove leading '@'
-                local module_dir = path:new(utils_path):parent():absolute() -- Go up two levels
-                local error_template_path = module_dir .. "/templates/error.md"
-
-                vim.notify("Module Dir: " .. module_dir, vim.log.levels.DEBUG)
-                vim.notify("Error Template Path: " .. error_template_path, vim.log.levels.DEBUG)
-
-                local error_file, error_err = io.open(error_template_path, "r")
-                if error_file then
-                    template_content = error_file:read("*a")
-                    error_file:close()
-                    vim.notify("No template provided, using error template.", vim.log.levels.WARN)
-                else
-                    vim.notify("No template provided and error template not found. Error: " .. (error_err or "unknown"), vim.log.levels.ERROR)
-                    return
-                end
-            else
-                vim.notify("Failed to locate utils.lua directory.", vim.log.levels.ERROR)
-                return
-            end
+          vim.notify("No template provided and error template not found. Error: " .. (error_err or "unknown"), vim.log.levels.ERROR)
+          return
         end
+      else
+        vim.notify("Failed to locate utils.lua directory.", vim.log.levels.ERROR)
+        return
+      end
+    end
 
-        if template_content then
-            local template_variables = {
-                [custom_type.name:lower() .. "_title"] = book_name,
-                start_date = vim.fn.strftime("%Y-%m-%d"),
-                filename = book_name 
-            }
-            local note_content = utils.replace_template_variables(template_content, template_variables)
+    if template_content then
+      local template_variables = {
+        [custom_type.name:lower() .. "_title"] = note_name,
+        start_date = vim.fn.strftime("%Y-%m-%d"),
+        filename = note_name,
+      }
+      local note_content = utils.replace_template_variables(template_content, template_variables)
 
-            local fileHandle, writeErr = io.open(book_file_path:absolute(), "w")
-            if fileHandle then
-                fileHandle:write(note_content)
-                fileHandle:close()
-                vim.cmd("edit " .. book_file_path:absolute())
-            else
-                vim.notify("Failed to write to file: " .. (writeErr or "unknown"), vim.log.levels.ERROR)
-            end
-        end
-    end)
+      local fileHandle, writeErr = io.open(note_file_path:absolute(), "w")
+      if fileHandle then
+        fileHandle:write(note_content)
+        fileHandle:close()
+        vim.cmd("edit " .. note_file_path:absolute())
+      else
+        vim.notify("Failed to write to file: " .. (writeErr or "unknown"), vim.log.levels.ERROR)
+      end
+    end
+  end)
 end
 
 -- Helper Functions for Single-File Notes
