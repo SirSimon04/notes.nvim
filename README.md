@@ -66,11 +66,11 @@ use({
           filename = "${date}-Meeting-${title}",
         },
         {
-            name = "Project",
-            dir = "~/Documents/Projects/",
-            template = "~/Documents/Notes/Templates/project.md",
-            folder_based = true,
-            filename = "${title}",
+          name = "Project",
+          dir = "~/Documents/Projects/",
+          template = "~/Documents/Notes/Templates/project.md",
+          folder_based = true,
+          filename = "${name}-${title}",
         },
       },
       environments = {
@@ -114,10 +114,11 @@ Custom note types can be defined in the `custom_types` table in the configuratio
 
 * `${title}`: The title of the note.
 * `${date}`: The date of the note (YYYY-MM-DD). If `${date}` is used in the `filename` pattern, the user will be prompted for a date.
+* `${name}`: The name of the custom type (Example: The concrete name of a Project). (Only for FOlder-Based Custom Types)
 
 **Numbered Notes**:
 
-If you want your notes to be sorted by number, you can set `numbered = true` in the custom type configuration. This will prepend a number to the note filename that will increment with each new note created.
+If you want your notes to be sorted by number, you can set `numbered = true` in the custom type configuration. This will prepend a number to the note filename that will increment with each new note created. The first note is created with the number 001.
 
 **Folder-Based Custom Types:**
 
@@ -132,10 +133,11 @@ custom_types = {
         dir = "~/Documents/Projects/",
         template = "~/Documents/Notes/Templates/project.md",
         folder_based = true,
-        filename = "${title}",
+        filename = "${name}-${title}",
     },
 }
 ```
+Then these commands will be available:
 
 * `:NotesOpenProject`: Opens a picker to select and open a project's main note file.
 * `:NotesCreateProject`: Prompts for a project name and creates a new project directory with a main note file.

@@ -59,7 +59,13 @@ function open_folder_based_notes(custom_type, config)
   local note_files = {}
   for _, note_dir in ipairs(note_dirs) do
     if note_dir then
-      local full_path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir .. "/" .. note_dir .. ".md"
+      local full_path
+      if custom_type.numbered then
+        full_path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir .. "/001-" .. note_dir .. ".md"
+      else
+        full_path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir .. "/" .. note_dir .. ".md"
+      end
+
       local note_file = path:new(full_path)
       if note_file and note_file:exists() then
         table.insert(note_files, { path = full_path, name = note_dir })
@@ -112,7 +118,20 @@ function add_note_to_folder_based_note(custom_type, config)
           if custom_type.numbered then
             new_number = get_next_number(note_dir_path)
           end
-          local new_note_path = path:new(note_dir_path, string.format("%03d-%s.md", new_number, new_note_name))
+
+          local filename_pattern = custom_type.filename or "${name}-${title}"
+          local filename_variables = {
+            title = new_note_name,
+            name = main_note_name:match("^%d*-(.+)$") and main_note_name:match("^%d*-(.+)$")[1] or main_note_name, -- Extract name without number.
+          }
+
+          local filename = filename_pattern:gsub("${title}", filename_variables.title):gsub("${name}", filename_variables.name) .. ".md"
+
+          if custom_type.numbered then
+            filename = string.format("%03d-%s", new_number, filename:gsub(".md", "")) .. ".md"
+          end
+
+          local new_note_path = path:new(note_dir_path, filename)
           local main_note_path = path:new(note_dir_path .. "/" .. main_note_name .. ".md")
 
           local new_note_file = io.open(new_note_path:absolute(), "w")
@@ -125,7 +144,7 @@ function add_note_to_folder_based_note(custom_type, config)
 
           local main_note_file = io.open(main_note_path:absolute(), "a")
           if main_note_file then
-            main_note_file:write("\n[[" .. string.format("%03d-%s", new_number, new_note_name) .. "]]")
+            main_note_file:write("\n[[" .. filename:gsub(".md", "") .. "]]\n")
             main_note_file:close()
             vim.cmd("edit " .. new_note_path:absolute())
           else
@@ -144,8 +163,14 @@ function create_folder_based_note(custom_type, config)
     end
 
     local note_dir_path = path:new(vim.fn.expand(custom_type.dir), note_name)
-    local note_file_path = path:new(note_dir_path, note_name .. ".md")
+    
+    local note_file_path
 
+    if custom_type.numbered then
+      note_file_path = path:new(note_dir_path .. "/001-" .. note_name .. ".md")
+    else
+      note_file_path = path:new(note_dir_path, note_name .. ".md")
+    end
     -- Create the directory using os.execute
     local cmd = 'mkdir -p "' .. note_dir_path:absolute() .. '"'
     local ok, err = os.execute(cmd)
