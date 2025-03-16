@@ -108,7 +108,11 @@ function add_note_to_folder_based_note(custom_type, config)
       vim_ui.input({ prompt = "New Note Name: " }, function(new_note_name)
         if new_note_name and new_note_name ~= "" then
           local main_note_name = display_names[choice]
-          local new_note_path = path:new(note_dir_path, main_note_name .. "-" .. new_note_name .. ".md")
+          local new_number = 1
+          if custom_type.numbered then
+            new_number = get_next_number(note_dir_path)
+          end
+          local new_note_path = path:new(note_dir_path, string.format("%03d-%s.md", new_number, new_note_name))
           local main_note_path = path:new(note_dir_path .. "/" .. main_note_name .. ".md")
 
           local new_note_file = io.open(new_note_path:absolute(), "w")
@@ -121,7 +125,7 @@ function add_note_to_folder_based_note(custom_type, config)
 
           local main_note_file = io.open(main_note_path:absolute(), "a")
           if main_note_file then
-            main_note_file:write("\n[[" .. main_note_name .. "-" .. new_note_name .. "]]\n")
+            main_note_file:write("\n[[" .. string.format("%03d-%s", new_number, new_note_name) .. "]]")
             main_note_file:close()
             vim.cmd("edit " .. new_note_path:absolute())
           else
@@ -325,6 +329,25 @@ function get_subdirectories(dir_path)
     vim.notify('Error closing find: ' .. (close_err or 'unknown'), vim.log.levels.ERROR)
   end
   return subdirs
+end
+
+-- Helper Function to get next number
+function get_next_number(dir_path)
+  local max_num = 0
+  local dir_iter, err = vim.fs.dir(dir_path)
+  if err then
+    vim.notify("Error reading directory: " .. (err or "unknown"), vim.log.levels.ERROR)
+    return 1 -- Return 1 on error to avoid breaking the function
+  end
+  if dir_iter then
+    for file in dir_iter do
+      local num = tonumber(file:match("^%d+"))
+      if num and num > max_num then
+        max_num = num
+      end
+    end
+  end
+  return max_num + 1
 end
 
 return M

@@ -115,6 +115,10 @@ Custom note types can be defined in the `custom_types` table in the configuratio
 * `${title}`: The title of the note.
 * `${date}`: The date of the note (YYYY-MM-DD). If `${date}` is used in the `filename` pattern, the user will be prompted for a date.
 
+**Numbered Notes**:
+
+If you want your notes to be sorted by number, you can set `numbered = true` in the custom type configuration. This will prepend a number to the note filename that will increment with each new note created.
+
 **Folder-Based Custom Types:**
 
 Custom types can be folder-based, meaning each note is a directory containing a main note file and potentially other related notes. To create a folder-based custom type, set `folder_based = true` in the custom type configuration.
