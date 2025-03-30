@@ -93,7 +93,12 @@ function add_note_to_folder_based_note(custom_type, config)
   local note_files = {}
   for _, note_dir in ipairs(note_dirs) do
     if note_dir then
-      local full_path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir .. "/" .. note_dir .. ".md"
+      local full_path
+      if custom_type.numbered then
+        full_path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir .. "/001-" .. note_dir .. ".md"
+      else
+        full_path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir .. "/" .. note_dir .. ".md"
+      end
       local note_file = path:new(full_path)
       if note_file and note_file:exists() then
         table.insert(note_files, { path = vim.fn.expand(custom_type.dir) .. "/" .. note_dir, name = note_dir })
@@ -132,7 +137,12 @@ function add_note_to_folder_based_note(custom_type, config)
           end
 
           local new_note_path = path:new(note_dir_path, filename)
-          local main_note_path = path:new(note_dir_path .. "/" .. main_note_name .. ".md")
+          local main_note_path
+          if custom_type.numbered then
+            main_note_path = path:new(note_dir_path .. "/001-" .. main_note_name .. ".md")
+          else
+            main_note_path = path:new(note_dir_path .. "/" .. main_note_name .. ".md")
+          end
 
           local new_note_file = io.open(new_note_path:absolute(), "w")
           if new_note_file then
@@ -144,7 +154,7 @@ function add_note_to_folder_based_note(custom_type, config)
 
           local main_note_file = io.open(main_note_path:absolute(), "a")
           if main_note_file then
-            main_note_file:write("\n[[" .. filename:gsub(".md", "") .. "]]\n")
+            main_note_file:write("\n[[" .. filename:gsub(".md", "") .. "]]")
             main_note_file:close()
             vim.cmd("edit " .. new_note_path:absolute())
           else
